@@ -2,6 +2,7 @@
 
 from gi.repository import GLib
 
+import time
 import dbus
 import dbus.mainloop.glib
 
@@ -18,6 +19,9 @@ _dbus2py = {
 	dbus.ByteArray : str,
 	dbus.ObjectPath : str
     }
+
+def get_time_now():
+	return time.strftime("[%Y-%m-%d %H:%M:%S]", time.localtime())
 
 def dbus2py(d):
 	t = type(d)
@@ -55,32 +59,32 @@ def pretty(d):
 
 def property_changed(name, value, path, interface):
 	iface = interface[interface.rfind(".") + 1:]
-	print("{%s} [%s] %s = %s" % (iface, path, name, pretty(value)))
+	print("%s {%s} [%s] %s = %s" % (get_time_now(), iface, path, name, pretty(value)))
 
 def added(name, value, member, path, interface):
 	iface = interface[interface.rfind(".") + 1:]
-	print("{%s} [%s] %s %s" % (iface, member, name, pretty(value)))
+	print("%s, {%s} [%s] %s %s" % (get_time_now(), iface, member, name, pretty(value)))
 
 def removed(name, member, path, interface):
 	iface = interface[interface.rfind(".") + 1:]
-	print("{%s} [%s] %s" % (iface, name, member))
+	print("%s {%s} [%s] %s" % (get_time_now(), iface, name, member))
 
 def event(member, path, interface):
 	iface = interface[interface.rfind(".") + 1:]
-	print("{%s} [%s] %s" % (iface, path, member))
+	print("%s {%s} [%s] %s" % (get_time_now(), iface, path, member))
 
 def message(msg, args, member, path, interface):
 	iface = interface[interface.rfind(".") + 1:]
-	print("{%s} [%s] %s %s (%s)" % (iface, path, member,
+	print("%s {%s} [%s] %s %s (%s)" % (get_time_now(), iface, path, member,
 					msg, pretty(args)))
 
 def ussd(msg, member, path, interface):
 	iface = interface[interface.rfind(".") + 1:]
-	print("{%s} [%s] %s %s" % (iface, path, member, msg))
+	print("%s {%s} [%s] %s %s" % (get_time_now(), iface, path, member, msg))
 
 def value(value, member, path, interface):
 	iface = interface[interface.rfind(".") + 1:]
-	print("{%s} [%s] %s %s" % (iface, path, member, str(value)))
+	print("%s {%s} [%s] %s %s" % (get_time_now(), iface, path, member, str(value)))
 
 if __name__ == '__main__':
 	dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
